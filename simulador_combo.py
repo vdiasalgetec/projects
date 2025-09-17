@@ -1,14 +1,17 @@
-
 import numpy as np
 
 def calcular_custo(produto, tipo, n_alunos, params):
     if tipo == 'cliente':
         if produto == 'conteudo':
-            return params['cf']
+            # Cliente pode ter cf ou cv+taxa dependendo do modelo
+            if 'cf' in params:
+                return params['cf']
+            else:
+                return n_alunos * params['cv'] + (params['taxa'] if n_alunos > 0 else 0)
         elif produto == 'labs':
             return n_alunos * params['cv'] + (params['taxa'] if n_alunos > 0 else 0)
         elif produto == 'avaliacao':
-            if params['modelo'] == 'interno':
+            if params.get('modelo') == 'interno':
                 return params['cf'] + params['custo_questao'] * params['qtd_questoes']
             else:
                 return n_alunos * params['cv'] + (params['taxa'] if n_alunos > 0 else 0)
